@@ -21,7 +21,7 @@ import           Control.Monad
 import           Control.Monad.Base
                  (MonadBase (..))
 import           Control.Monad.Catch
-                 (MonadCatch, MonadThrow)
+                 (MonadCatch, MonadMask, MonadThrow)
 import           Control.Monad.Error.Class
                  (MonadError (..))
 import           Control.Monad.Reader
@@ -96,8 +96,8 @@ client api = api `clientIn` (Proxy :: Proxy ClientM)
 newtype ClientM a = ClientM
   { runClientM' :: ReaderT ClientEnv (ExceptT ClientError IO) a }
   deriving ( Functor, Applicative, Monad, MonadIO, Generic
-           , MonadReader ClientEnv, MonadError ClientError, MonadThrow
-           , MonadCatch)
+           , MonadReader ClientEnv, MonadError ClientError
+           , MonadCatch, MonadMask, MonadThrow)
 
 instance MonadBase IO ClientM where
   liftBase = ClientM . liftBase
